@@ -9,7 +9,7 @@ var redis = config.NewRedis()
 var db = config.NewDatabase()
 
 func ValidateAPIKey(c *fiber.Ctx) error {
-	token := c.Cookies("access_token")
+	token := c.Get("x-access-token")
 
 	if t, _ := redis.Get(token); t != "true" {
 		if !db.FindOne(token) {

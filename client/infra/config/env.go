@@ -41,12 +41,15 @@ const (
 )
 
 type Config struct {
-	PORT            int
-	RUN_SEEDS       bool
-	ENVIRONMENT     Environment
-	NATS_URL        string
-	JAEGER_ENDPOINT string
-	SERVICE_NAME    string
+	PORT                   int
+	RUN_SEEDS              bool
+	ENVIRONMENT            Environment
+	NATS_URL               string
+	JAEGER_ENDPOINT        string
+	SERVICE_NAME           string
+	EXCHANGE_SERVICE_URL_1 string
+	EXCHANGE_SERVICE_URL_2 string
+	API_TOKEN              string
 }
 
 func Get(key, fallback string) string {
@@ -83,8 +86,11 @@ func NewConfig() *Config {
 	}
 
 	return &Config{
-		PORT:         GetInt("PORT", 3000),
-		ENVIRONMENT:  GetEnvironment(),
-		SERVICE_NAME: Get("SERVICE_NAME", "auth"),
+		PORT:                   GetInt("PORT", 3000),
+		ENVIRONMENT:            GetEnvironment(),
+		SERVICE_NAME:           Get("SERVICE_NAME", "auth"),
+		EXCHANGE_SERVICE_URL_1: Get("EXCHANGE_SERVICE_URL_1", "http://localhost:3001/api/v1/rates"),
+		EXCHANGE_SERVICE_URL_2: Get("EXCHANGE_SERVICE_URL_2", "http://localhost:3002/api/v1/rates"),
+		API_TOKEN:              Get("API_TOKEN", "​8a395ccb-7f3e-4a5a-b35c-4fea034d24f2"),
 	}
 }

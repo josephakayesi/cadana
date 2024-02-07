@@ -26,7 +26,7 @@ func NewExchangeUsecase(timeout time.Duration) ExchangeUsecase {
 
 func (uu *exchangeUsecase) GetRate(c *fiber.Ctx, r dto.GetExchangeRateDto) (*dto.GetExchangeRateResponseDto, error) {
 
-	rand.Seed(time.Now().UnixNano())
+	rand := rand.New(rand.NewSource(time.Now().UnixNano()))
 
 	exchangeRates := map[string]float64{
 		"USD-JPY": rand.Float64() * 100,

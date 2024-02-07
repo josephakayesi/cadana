@@ -1,18 +1,19 @@
 version: "3.9"
 
 services:
-  # client:
-  #   build: ./client/.
-  #   container_name: "client"
-  #   env_file:
-  #     - ./client/.env
-  #   ports:
-  #     - "3000:3000"
-  #   networks:
-  #     - cadana_network
+  client:
+    build: ./client/.
+    container_name: "client"
+    env_file:
+      - ./client/.env
+    ports:
+      - "3000:3000"
+    networks:
+      - cadana_network
 
   exchange-1:
     build: ./exchange-1/.
+    hostname: exchange-1
     container_name: "exchange-1"
     env_file:
       - ./exchange-1/.env
@@ -20,14 +21,28 @@ services:
       - "3001:3001"
     networks:
       - cadana_network
+    depends_on:
+      - redis
 
   exchange-2:
     build: ./exchange-2/.
+    hostname: exchange-2
     container_name: "exchange-2"
     env_file:
       - ./exchange-2/.env
     ports:
       - "3002:3002"
+    networks:
+      - cadana_network
+    depends_on:
+      - redis
+
+  redis:
+    image: redis
+    hostname: redis
+    container_name: redis
+    ports:
+      - "6379:6379"
     networks:
       - cadana_network
 

@@ -48,10 +48,10 @@ type Config struct {
 	JAEGER_ENDPOINT string
 	SERVICE_NAME    string
 	REDIS_HOST      string
-	REDIS_PORT      string
+	REDIS_PORT      int
 	REDIS_USERNAME  string
 	REDIS_PASSWORD  string
-	API_KEY         string
+	REDIS_DATABASE  int
 }
 
 func Get(key, fallback string) string {
@@ -92,9 +92,9 @@ func NewConfig() *Config {
 		ENVIRONMENT:    GetEnvironment(),
 		SERVICE_NAME:   Get("SERVICE_NAME", "auth"),
 		REDIS_HOST:     Get("REDIS_HOST", "localhost"),
-		REDIS_PORT:     Get("REDIS_PORT", "6379"),
+		REDIS_PORT:     GetInt("REDIS_PORT", 6379),
 		REDIS_USERNAME: Get("REDIS_USERNAME", ""),
 		REDIS_PASSWORD: Get("REDIS_PASSWORD", ""),
-		API_KEY:        Get("API_KEY", "8a395ccb-7f3e-4a5a-b35c-4fea034d24f2"),
+		REDIS_DATABASE: GetInt("REDIS_DATABASE", 1),
 	}
 }

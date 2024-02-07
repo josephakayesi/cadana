@@ -2,9 +2,9 @@ package controller
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/josephakayesi/cadana/exchange-2/application/dto"
-	"github.com/josephakayesi/cadana/exchange-2/domain/usecase"
-	"github.com/josephakayesi/cadana/exchange-2/internal"
+	"github.com/josephakayesi/cadana/client/application/dto"
+	"github.com/josephakayesi/cadana/client/domain/usecase"
+	"github.com/josephakayesi/cadana/client/internal"
 	"golang.org/x/exp/slog"
 )
 

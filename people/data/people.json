@@ -1,0 +1,78 @@
+{
+  "people": [
+    {
+      "id": "1",
+      "personName": "Cadanaut 1",
+      "salary": {
+        "value": 4200,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "8",
+      "personName": "Cadanaut 8",
+      "salary": {
+        "value": 8900,
+        "currency": "EUR"
+      }
+    },
+    {
+      "id": "2",
+      "personName": "Cadanaut 2",
+      "salary": {
+        "value": 7300,
+        "currency": "USD"
+      }
+    },
+
+    {
+      "id": "4",
+      "personName": "Cadanaut 4",
+      "salary": {
+        "value": 6700,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "5",
+      "personName": "Cadanaut 5",
+      "salary": {
+        "value": 2300,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "6",
+      "personName": "Cadanaut 6",
+      "salary": {
+        "value": 4200,
+        "currency": "EUR"
+      }
+    },
+
+    {
+      "id": "9",
+      "personName": "Cadanaut 9",
+      "salary": {
+        "value": 9200,
+        "currency": "EUR"
+      }
+    },
+    {
+      "id": "3",
+      "personName": "Cadanaut 3",
+      "salary": {
+        "value": 7100,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "10",
+      "personName": "Cadanaut 10",
+      "salary": {
+        "value": 5500,
+        "currency": "EUR"
+      }
+    }
+  ]
+}

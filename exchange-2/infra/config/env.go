@@ -47,6 +47,11 @@ type Config struct {
 	NATS_URL        string
 	JAEGER_ENDPOINT string
 	SERVICE_NAME    string
+	REDIS_HOST      string
+	REDIS_PORT      int
+	REDIS_USERNAME  string
+	REDIS_PASSWORD  string
+	REDIS_DATABASE  int
 }
 
 func Get(key, fallback string) string {
@@ -83,8 +88,13 @@ func NewConfig() *Config {
 	}
 
 	return &Config{
-		PORT:         GetInt("PORT", 3000),
-		ENVIRONMENT:  GetEnvironment(),
-		SERVICE_NAME: Get("SERVICE_NAME", "auth"),
+		PORT:           GetInt("PORT", 3000),
+		ENVIRONMENT:    GetEnvironment(),
+		SERVICE_NAME:   Get("SERVICE_NAME", "auth"),
+		REDIS_HOST:     Get("REDIS_HOST", "localhost"),
+		REDIS_PORT:     GetInt("REDIS_PORT", 6379),
+		REDIS_USERNAME: Get("REDIS_USERNAME", ""),
+		REDIS_PASSWORD: Get("REDIS_PASSWORD", ""),
+		REDIS_DATABASE: GetInt("REDIS_DATABASE", 2),
 	}
 }

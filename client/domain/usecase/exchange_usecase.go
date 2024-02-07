@@ -6,7 +6,8 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/josephakayesi/cadana/exchange-2/application/dto"
+	"github.com/josephakayesi/cadana/client/application/dto"
+	"github.com/josephakayesi/cadana/client/infra/config"
 	"github.com/opensaucerer/goaxios"
 )
 
@@ -24,6 +25,8 @@ func NewExchangeUsecase(timeout time.Duration) ExchangeUsecase {
 	}
 }
 
+var cfg = config.NewConfig()
+
 func (uu *exchangeUsecase) GetRate(c *fiber.Ctx, r dto.GetExchangeRateDto) (*dto.GetExchangeRateResponseDto, []string) {
 	var wg sync.WaitGroup
 
@@ -33,8 +36,8 @@ func (uu *exchangeUsecase) GetRate(c *fiber.Ctx, r dto.GetExchangeRateDto) (*dto
 	errorCh := make(chan error, 2)
 
 	urls := []string{
-		"http://localhost:3001/api/v1/rates",
-		"http://localhost:3002/api/v1/rates",
+		cfg.EXCHANGE_SERVICE_URL_1,
+		cfg.EXCHANGE_SERVICE_URL_2,
 	}
 
 	for _, url := range urls {
@@ -68,7 +71,10 @@ func fetchRateFromExchange(url string, requestBody dto.GetExchangeRateDto, wg *s
 		Body:           requestBody,
 		Method:         "POST",
 		ResponseStruct: &dto.GetExchangeRateResponseDto{},
-		// BearerToken:    token,
+		Headers: map[string]string{
+			"Content-Type":   "application/json",
+			"x-access-token": cfg.API_TOKEN,
+		},
 	}
 	response := a.RunRest()
 

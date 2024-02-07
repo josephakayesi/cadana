@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"runtime"
 	"time"
 
@@ -22,11 +21,11 @@ var cfg = NewConfig()
 
 func getRedisConfig(cfg *Config) *redis.Config {
 	return &redis.Config{
-		Host:      "localhost",
-		Port:      6379,
-		Username:  "",
-		Password:  "",
-		Database:  0,
+		Host:      cfg.REDIS_HOST,
+		Port:      cfg.REDIS_PORT,
+		Username:  cfg.REDIS_USERNAME,
+		Password:  cfg.REDIS_PASSWORD,
+		Database:  cfg.REDIS_DATABASE,
 		Reset:     false,
 		TLSConfig: nil,
 		PoolSize:  10 * runtime.GOMAXPROCS(0),
@@ -34,7 +33,6 @@ func getRedisConfig(cfg *Config) *redis.Config {
 }
 
 func NewRedis() *Redis {
-	fmt.Println("connecting redis")
 	return &Redis{
 		Storage: redis.New(*getRedisConfig(cfg)),
 	}

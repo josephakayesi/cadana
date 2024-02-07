@@ -17,6 +17,7 @@ import (
 	route "github.com/josephakayesi/cadana/exchange-2/application/api/route"
 	"github.com/josephakayesi/cadana/exchange-2/application/api/validation"
 	"github.com/josephakayesi/cadana/exchange-2/infra/config"
+	"github.com/josephakayesi/cadana/exchange-2/internal"
 
 	slog "golang.org/x/exp/slog"
 )
@@ -26,6 +27,8 @@ func main() {
 	c := config.NewConfig()
 
 	app := fiber.New()
+
+	app.Use(internal.ValidateAPIKey)
 
 	validation.NewValidator()
 

@@ -24,9 +24,6 @@ func (ec *ExchangeController) GetRate(c *fiber.Ctx) error {
 		return err
 	}
 
-	fmt.Println("GetExchangeRateDto", getExchangeRateDto)
-
-	// time.Sleep(time.Second * 5)
 	getExchangeRateResponseDto, err := ec.ExchangeUsecase.GetRate(c, *getExchangeRateDto)
 
 	if err != nil {
