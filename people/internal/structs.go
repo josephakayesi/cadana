@@ -99,10 +99,6 @@ func GetUniqueCurrencies(people []Person) []string {
 	return currencies
 }
 
-// func GetUniqueCurrencies(people []Person) []string {
-// 	return getUniqueCurrencies(people)
-// }
-
 func filterPeopleByCurrency(people []Person, currency string) []Person {
 	var filteredPeople []Person
 

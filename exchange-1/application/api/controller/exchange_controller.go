@@ -36,5 +36,4 @@ func (ec *ExchangeController) GetRate(c *fiber.Ctx) error {
 	rateMap[getExchangeRateResponseDto.CurrencyPair] = getExchangeRateResponseDto.ExchangeRate
 
 	return c.Status(fiber.StatusOK).JSON(rateMap)
-
 }

@@ -1,5 +1,9 @@
 package config
 
+type DatabaseInterface interface {
+	FindOne(key string) bool
+}
+
 type Database struct {
 	TokenTable map[string]bool
 }

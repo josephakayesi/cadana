@@ -15,40 +15,45 @@ import (
 
 func main() {
 	file, err := os.Open("data/people.json")
-
 	if err != nil {
 		fmt.Println(err)
+		return
 	}
-
-	fmt.Println("successfully opened people.json")
 	defer file.Close()
 
-	byteValue, _ := io.ReadAll(file)
+	byteValue, err := io.ReadAll(file)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 
 	var people internal.People
-
-	json.Unmarshal([]byte(byteValue), &people)
-
-	// people.SortBySalaryInAscendingOrder()
-	// people.SortBySalaryInDescendingOrder()
-	// groupedPeople := people.GroupByCurrency()
-	// internal.PrintGroupedPeople(groupedPeople)
+	err = json.Unmarshal(byteValue, &people)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 
 	currencies := internal.GetUniqueCurrencies(people.People)
 
 	var wg sync.WaitGroup
 
-	successCh := make(chan dto.ExchangeRate, 2)
-	errorCh := make(chan error, 2)
+	successCh := make(chan dto.ExchangeRate, len(currencies))
+	errorCh := make(chan error, len(currencies))
 
 	currentExchangeRates := make(map[string]float64)
 
+	// Provide the actual URL for the exchange rates API
+	url := "http://localhost:3000/api/v1/rates"
+
+	// Create instances of the DefaultExchangeRateGetter and DefaultLogger
+	exchangeRateGetter := &api.DefaultExchangeRateGetter{}
+	logger := &api.DefaultLogger{}
+
 	for _, currency := range currencies {
 		wg.Add(1)
-		go api.GetExhangeRatesForCurrency(currency, &wg, successCh)
+		go api.GetExchangeRatesForCurrency(currency, url, &wg, successCh, exchangeRateGetter, logger)
 	}
-
-	// wg.Wait()
 
 	go func() {
 		wg.Wait()
@@ -70,8 +75,9 @@ func main() {
 	}
 
 	// internal.PrintPeople(people.People)
-	sortedPeople := people.SortBySalaryInAscendingOrder()
 	// people.SortBySalaryInDescendingOrder()
 	// groupedPeople := people.GroupByCurrency()
+
+	sortedPeople := people.SortBySalaryInAscendingOrder()
 	internal.PrintPeople(sortedPeople)
 }
