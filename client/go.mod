@@ -1,4 +1,4 @@
-module github.com/josephakayesi/cadana/exchange-2
+module github.com/josephakayesi/cadana/client
 
 go 1.21.5
 
@@ -8,6 +8,13 @@ require (
 	github.com/gofiber/helmet/v2 v2.2.26
 	github.com/joho/godotenv v1.5.1
 	golang.org/x/exp v0.0.0-20240119083558-1b970713d09a
+)
+
+require (
+	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/stretchr/objx v0.5.0 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
 require (
@@ -23,6 +30,7 @@ require (
 	github.com/mattn/go-runewidth v0.0.15 // indirect
 	github.com/opensaucerer/goaxios v0.0.6 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
+	github.com/stretchr/testify v1.8.4
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.51.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect

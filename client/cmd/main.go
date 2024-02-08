@@ -14,9 +14,9 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/requestid"
 
 	"github.com/gofiber/helmet/v2"
-	route "github.com/josephakayesi/cadana/exchange-2/application/api/route"
-	"github.com/josephakayesi/cadana/exchange-2/application/api/validation"
-	"github.com/josephakayesi/cadana/exchange-2/infra/config"
+	route "github.com/josephakayesi/cadana/client/application/api/route"
+	"github.com/josephakayesi/cadana/client/application/api/validation"
+	"github.com/josephakayesi/cadana/client/infra/config"
 
 	slog "golang.org/x/exp/slog"
 )

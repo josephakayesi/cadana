@@ -1,33 +1,50 @@
 package usecase
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
+	"net/http"
 	"sync"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/josephakayesi/cadana/client/application/dto"
 	"github.com/josephakayesi/cadana/client/infra/config"
-	"github.com/opensaucerer/goaxios"
 )
 
+// HTTPClient interface for making HTTP requests
+type HTTPClient interface {
+	Do(req *http.Request) (*http.Response, error)
+}
+
+// FiberContext interface for Fiber.Ctx
+type FiberContext interface {
+	JSON(v interface{}) error
+	Status(code int) *fiber.Ctx
+	BodyParser(v interface{}) error
+}
+
 type ExchangeUsecase interface {
-	GetRate(c *fiber.Ctx, r dto.GetExchangeRateDto) (*dto.GetExchangeRateResponseDto, []string)
+	GetRate(c FiberContext, r dto.GetExchangeRateDto) (*dto.GetExchangeRateResponseDto, []string)
+	fetchRateFromExchange(url string, requestBody dto.GetExchangeRateDto, wg *sync.WaitGroup, successCh chan<- dto.GetExchangeRateResponseDto, errorCh chan<- error)
 }
 
 type exchangeUsecase struct {
 	contextTimeout time.Duration
+	httpClient     HTTPClient
 }
 
-func NewExchangeUsecase(timeout time.Duration) ExchangeUsecase {
+func NewExchangeUsecase(timeout time.Duration, httpClient HTTPClient) ExchangeUsecase {
 	return &exchangeUsecase{
 		contextTimeout: timeout,
+		httpClient:     httpClient,
 	}
 }
 
 var cfg = config.NewConfig()
 
-func (uu *exchangeUsecase) GetRate(c *fiber.Ctx, r dto.GetExchangeRateDto) (*dto.GetExchangeRateResponseDto, []string) {
+func (uu *exchangeUsecase) GetRate(c FiberContext, r dto.GetExchangeRateDto) (*dto.GetExchangeRateResponseDto, []string) {
 	var wg sync.WaitGroup
 
 	var errorsSlice []string
@@ -42,7 +59,7 @@ func (uu *exchangeUsecase) GetRate(c *fiber.Ctx, r dto.GetExchangeRateDto) (*dto
 
 	for _, url := range urls {
 		wg.Add(1)
-		go fetchRateFromExchange(url, r, &wg, successCh, errorCh)
+		go uu.fetchRateFromExchange(url, r, &wg, successCh, errorCh)
 	}
 
 	go func() {
@@ -60,30 +77,44 @@ func (uu *exchangeUsecase) GetRate(c *fiber.Ctx, r dto.GetExchangeRateDto) (*dto
 	}
 
 	return nil, errorsSlice
-
 }
 
-func fetchRateFromExchange(url string, requestBody dto.GetExchangeRateDto, wg *sync.WaitGroup, successCh chan<- dto.GetExchangeRateResponseDto, errorCh chan<- error) {
+func (uu *exchangeUsecase) fetchRateFromExchange(url string, requestBody dto.GetExchangeRateDto, wg *sync.WaitGroup, successCh chan<- dto.GetExchangeRateResponseDto, errorCh chan<- error) {
 	defer wg.Done()
 
-	a := goaxios.GoAxios{
-		Url:            url,
-		Body:           requestBody,
-		Method:         "POST",
-		ResponseStruct: &dto.GetExchangeRateResponseDto{},
-		Headers: map[string]string{
-			"Content-Type":   "application/json",
-			"x-access-token": cfg.API_TOKEN,
-		},
-	}
-	response := a.RunRest()
-
-	if response.Error != nil {
-		errorCh <- fmt.Errorf("error fetching %s: %s", url, response.Error)
+	requestBodyBytes, err := json.Marshal(requestBody)
+	if err != nil {
+		errorCh <- fmt.Errorf("error marshaling request body: %s", err)
 		return
 	}
 
-	data, _ := response.Body.(*dto.GetExchangeRateResponseDto)
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(requestBodyBytes))
+	if err != nil {
+		errorCh <- fmt.Errorf("error creating HTTP request: %s", err)
+		return
+	}
 
-	successCh <- *data
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("x-access-token", cfg.API_TOKEN)
+
+	resp, err := uu.httpClient.Do(req)
+	if err != nil {
+		errorCh <- fmt.Errorf("error making HTTP request: %s", err)
+		return
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		errorCh <- fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+		return
+	}
+
+	var rate dto.GetExchangeRateResponseDto
+	err = json.NewDecoder(resp.Body).Decode(&rate)
+	if err != nil {
+		errorCh <- fmt.Errorf("error decoding response body: %s", err)
+		return
+	}
+
+	successCh <- rate
 }

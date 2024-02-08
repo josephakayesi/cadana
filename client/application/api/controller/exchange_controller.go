@@ -8,13 +8,27 @@ import (
 	"golang.org/x/exp/slog"
 )
 
-type ExchangeController struct {
+// ExchangeController interface for ExchangeController methods
+type ExchangeController interface {
+	GetRate(c usecase.FiberContext) error
+}
+
+// exchangeController implements ExchangeController
+type exchangeController struct {
 	ExchangeUsecase usecase.ExchangeUsecase
 	Logger          slog.Logger
 }
 
-func (ec *ExchangeController) GetRate(c *fiber.Ctx) error {
+// NewExchangeController creates a new instance of ExchangeController
+func NewExchangeController(exchangeUsecase usecase.ExchangeUsecase, logger slog.Logger) ExchangeController {
+	return &exchangeController{
+		ExchangeUsecase: exchangeUsecase,
+		Logger:          logger,
+	}
+}
 
+// GetRate handles the HTTP request to get the exchange rate
+func (ec *exchangeController) GetRate(c usecase.FiberContext) error {
 	getExchangeRateDto := &dto.GetExchangeRateDto{}
 
 	if err := c.BodyParser(getExchangeRateDto); err != nil {
@@ -25,9 +39,8 @@ func (ec *ExchangeController) GetRate(c *fiber.Ctx) error {
 	getExchangeRateResponseDto, errs := ec.ExchangeUsecase.GetRate(c, *getExchangeRateDto)
 
 	if errs != nil {
-		return c.Status(400).JSON(internal.NewErrorResponse("unable to get exchange rate", errs))
+		return c.Status(fiber.StatusBadRequest).JSON(internal.NewErrorResponse("unable to get exchange rate", errs))
 	}
 
 	return c.Status(fiber.StatusOK).JSON(getExchangeRateResponseDto)
-
 }
