@@ -5,10 +5,3 @@ type GetExchangeRateDto struct {
 }
 
 type GetExchangeRateResponseDto map[string]float64
-
-// func NewGetExchangeRateResponseDto(currencyPair string, exchangeRate float64) *GetExchangeRateResponseDto {
-// 	return &GetExchangeRateResponseDto{
-// 		CurrencyPair: currencyPair,
-// 		ExchangeRate: exchangeRate,
-// 	}
-// }
