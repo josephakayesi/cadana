@@ -1,15 +1,15 @@
 version: "3.9"
 
 services:
-  # client:
-  #   build: ./client/.
-  #   container_name: "client"
-  #   env_file:
-  #     - ./client/.env
-  #   ports:
-  #     - "3000:3000"
-  #   networks:
-  #     - cadana_network
+  client:
+    build: ./client/.
+    container_name: "client"
+    env_file:
+      - ./client/.env
+    ports:
+      - "3000:3000"
+    networks:
+      - cadana_network
 
   exchange-1:
     build: ./exchange-1/.

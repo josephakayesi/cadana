@@ -15,7 +15,6 @@ import (
 
 	"github.com/gofiber/helmet/v2"
 	route "github.com/josephakayesi/cadana/client/application/api/route"
-	"github.com/josephakayesi/cadana/client/application/api/validation"
 	"github.com/josephakayesi/cadana/client/infra/config"
 
 	slog "golang.org/x/exp/slog"
@@ -26,8 +25,6 @@ func main() {
 	c := config.NewConfig()
 
 	app := fiber.New()
-
-	validation.NewValidator()
 
 	app.Use(helmet.New())
 

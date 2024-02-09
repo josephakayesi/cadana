@@ -52,8 +52,6 @@ func TestGetExchangeRatesForCurrency(t *testing.T) {
 	actualRate := <-ch
 	assert.Equal(t, expectedRate, actualRate)
 
-	// Assert that Done() is called on the wait group
-
 	// Test when currency is "JPY"
 	wg.Add(1)
 
@@ -72,8 +70,5 @@ func TestGetExchangeRatesForCurrency(t *testing.T) {
 	actualRateJPY := <-ch
 	assert.Equal(t, expectedRateJPY, actualRateJPY)
 
-	// Assert that Done() is called on the wait group
-
-	// Assert that the logger was not called with Fatalf
 	mockLogger.AssertNotCalled(t, "Fatalf")
 }

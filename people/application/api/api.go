@@ -11,65 +11,6 @@ import (
 	"github.com/josephakayesi/cadana/people/application/dto"
 )
 
-// func GetExchangeRatesForCurrency(currency string, url string, wg *sync.WaitGroup, ch chan dto.ExchangeRate) {
-// 	exchangeRateMap := map[string]string{
-// 		"EUR": "USD-EUR",
-// 		"JPY": "USD-JPY",
-// 	}
-
-// 	if currency == "USD" {
-// 		ch <- dto.ExchangeRate{
-// 			CurrencyPair: "USD",
-// 			Rate:         1,
-// 		}
-
-// 		wg.Done()
-// 		return
-// 	}
-
-// 	currencyPair := exchangeRateMap[currency]
-
-// 	requestBody := dto.GetExchangeRateDto{
-// 		CurrencyPair: currencyPair,
-// 	}
-
-// 	requestBodyBytes, err := json.Marshal(requestBody)
-// 	if err != nil {
-// 		log.Fatalf("Error marshaling request body: %v", err)
-// 	}
-
-// 	resp, err := http.Post(url, "application/json", bytes.NewBuffer(requestBodyBytes))
-// 	if err != nil {
-// 		log.Fatalf("Error making HTTP request: %v", err)
-// 	}
-
-// 	defer resp.Body.Close()
-
-// 	body, err := io.ReadAll(resp.Body)
-// 	if err != nil {
-// 		log.Fatalf("Error reading response body: %v", err)
-// 	}
-
-// 	var rate dto.GetExchangeRateResponseDto
-// 	err = json.Unmarshal(body, &rate)
-// 	if err != nil {
-// 		log.Fatalf("Error unmarshaling response body: %v", err)
-// 	}
-
-// 	// b, err := json.MarshalIndent(rate, "", "  ")
-// 	// if err != nil {
-// 	// 	log.Fatalf("Error formatting JSON response: %v", err)
-// 	// }
-// 	// fmt.Print(string(b))
-
-// 	ch <- dto.ExchangeRate{
-// 		CurrencyPair: currency,
-// 		Rate:         rate[currencyPair],
-// 	}
-
-// 	wg.Done()
-// }
-
 // ExchangeRateGetter is an interface for getting exchange rates.
 type ExchangeRateGetter interface {
 	Get(url string, contentType string, body io.Reader) (*http.Response, error)

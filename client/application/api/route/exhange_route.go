@@ -1,7 +1,6 @@
 package route
 
 import (
-	"net/http"
 	"os"
 	"time"
 
@@ -13,7 +12,7 @@ import (
 
 func NewExchangeRouter(timeout time.Duration, group fiber.Router) {
 	ec := &controller.ExchangeController{
-		ExchangeUsecase: usecase.NewExchangeUsecase(timeout, &http.Client{}),
+		ExchangeUsecase: usecase.NewExchangeUsecase(timeout),
 		Logger:          *slog.New(slog.NewJSONHandler(os.Stdout, nil)).With("component", "client"),
 	}
 

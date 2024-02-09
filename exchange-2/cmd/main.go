@@ -15,7 +15,6 @@ import (
 
 	"github.com/gofiber/helmet/v2"
 	route "github.com/josephakayesi/cadana/exchange-2/application/api/route"
-	"github.com/josephakayesi/cadana/exchange-2/application/api/validation"
 	"github.com/josephakayesi/cadana/exchange-2/infra/config"
 	"github.com/josephakayesi/cadana/exchange-2/internal"
 
@@ -28,9 +27,22 @@ func main() {
 
 	app := fiber.New()
 
-	app.Use(internal.ValidateAPIKey)
+	redis := config.NewRedis()
+	db := config.NewDatabase()
 
-	validation.NewValidator()
+	app.Use(func(c *fiber.Ctx) error {
+		token := c.Get("x-access-token")
+
+		if t, _ := redis.Get(token); t != "true" {
+			if !db.FindOne(token) {
+				return c.Status(400).JSON(internal.NewErrorResponse("Invalid API Key"))
+			}
+
+			redis.Set(token, "true")
+		}
+
+		return c.Next()
+	})
 
 	app.Use(helmet.New())
 
