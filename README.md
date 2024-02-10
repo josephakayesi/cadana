@@ -48,6 +48,6 @@ Ensure that Docker is installed on your machine before proceeding.
 4. Access the people module and start the application that consumes data from the client server and performs manipulations on the Person objects.
 
    ```
-   cd client
+   cd people
    go run cmd/main.go
    ```
